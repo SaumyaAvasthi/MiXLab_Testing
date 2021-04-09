@@ -134,7 +134,7 @@ class ngrok:
     if v:
       clear_output()
       loadingAn(name="lds")
-      textAn("Configuring ngrok...", ty='twg')
+      textAn("Preparing ngrok...", ty='twg')
     if self.USE_FREE_TOKEN:
       for sn in service:
         self.ngrok_config(
@@ -556,8 +556,10 @@ class jprq:
       open(filePath, 'w').close()
 
     if not ids:self.ids=str(uuid.uuid4())[:12]
-    #Installing jprq
+    
+    #Installing the jprq module
     runSh("pip install jprq")
+    runSh("pip install jprq --upgrade")
 
     self.connection=None
     self.proto=proto
@@ -578,7 +580,7 @@ class jprq:
           return oldAddr
       except:
         pass
-    hostname = f"MiXLab-{self.ids}"
+    hostname = f"mixlab-{self.ids}"
     self.connection=Popen(f"jprq -s {hostname} {self.port}".split(),
       stdout=PIPE, stdin=PIPE, stderr=PIPE)
     
@@ -622,7 +624,7 @@ class PortForward:
           if v:
               clear_output()
               loadingAn(name="lds")
-              textAn("Configuring localhost...", ty="twg")
+              textAn("Preparing localhost...", ty="twg")
           data = dict(url="https://"+LocalhostRun(port).keep_alive())
           if displayB:
               displayUrl(data, btc)
@@ -636,7 +638,7 @@ class PortForward:
         if v:
           clear_output()
           loadingAn(name="lds")
-          textAn("Configuring argo tunnel...", ty="twg")
+          textAn("Preparing argo tunnel...", ty="twg")
         data = dict(url="https://"+ArgoTunnel(port, proto, closePort(self.config[1])).keep_alive())
         if displayB:
           displayUrl(data, btc)
@@ -648,7 +650,7 @@ class PortForward:
         if v:
           clear_output()
           loadingAn(name="lds")
-          textAn("Configuring jprq...", ty="twg")
+          textAn("Preparing jprq...", ty="twg")
         data = dict(url="https://"+jprq(port, proto).keep_alive())
         if displayB:
           displayUrl(data, btc)
@@ -880,21 +882,21 @@ def handleJDLogin(newAccount):
 # ====================================================================================================
 
 #PATH_RClone_Config renamed to rcloneConfigurationPath
-rcloneConfigurationPath = "/usr/local/sessionSettings"
+rcloneConfigurationPath = "/root/.config/rclone"
 
 def displayOutput(operationName="", color="#ce2121"):
     if color == "success":
         hColor = "#28a745"
-        displayTxt = f"👍 Operation {operationName} has been successfully completed."
+        displayTxt = f"👍 Operation {operationName} has been successfully performed."
     elif color == "danger":
         hColor = "#dc3545"
-        displayTxt = f"❌ Operation {operationName} has been errored."
+        displayTxt = f"❌ Unable to perform operation {operationName}!"
     elif color == "info":
         hColor = "#17a2b8"
-        displayTxt = f"👋 Operation {operationName} has some info."
+        displayTxt = f"👋 Operation {operationName} have some information."
     elif color == "warning":
         hColor = "#ffc107"
-        displayTxt = f"⚠ Operation {operationName} has been warning."
+        displayTxt = f"⚠ Operation {operationName} have a warning!"
     else:
         hColor = "#ffc107"
         displayTxt = f"{operationName} works."
@@ -940,12 +942,12 @@ def configTimezone(auto=True):
     data = {"timezone": "Asia/Ho_Chi_Minh"}
     accessSettingFile("timezone.txt", data)
 
-def installRclone():
-    if not checkAvailable("/usr/bin/rclone"):
-        runSh(
-            "curl -s https://rclone.org/install.sh | sudo bash",
-            shell=True,  # nosec
-        )
+#def installRclone():
+#    if not checkAvailable("/usr/bin/rclone"):
+#        runSh(
+#            "curl -s https://rclone.org/install.sh | sudo bash",
+#            shell=True,  # nosec
+#        )
 
 def uploadRcloneConfig(localUpload=False):
     if not localUpload and checkAvailable("rclone.conf", userPath=True):
@@ -999,5 +1001,5 @@ def prepareSession():
         configTimezone()
         uploadRcloneConfig()
         uploadQBittorrentConfig()
-        installRclone()
+        #installRclone()
         accessSettingFile("ready.txt", {"prepared": "True"})
